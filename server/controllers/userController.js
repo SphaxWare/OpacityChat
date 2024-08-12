@@ -12,7 +12,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
 
     const payload = { id: user.id };
-    const token = jwt.sign(payload, 'yourSecretKey', { expiresIn: '1h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ token });
   } catch (err) {
@@ -33,7 +33,7 @@ exports.loginUser = async (req, res) => {
     }
 
     const payload = { id: user.id };
-    const token = jwt.sign(payload, 'yourSecretKey', { expiresIn: '1h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ token });
   } catch (err) {
