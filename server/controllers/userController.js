@@ -12,7 +12,8 @@ exports.registerUser = async (req, res) => {
     await user.save();
 
     const payload = { id: user.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' });
 
     res.json({ token });
   } catch (err) {
@@ -37,7 +38,7 @@ exports.loginUser = async (req, res) => {
 
     res.json({ token });
   } catch (err) {
-    res.status(500).send('Server error');
+    res.status(500).json({error: "Server Error"});
   }
 };
 

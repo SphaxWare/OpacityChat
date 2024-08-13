@@ -5,6 +5,9 @@ const cors = require('cors');
 
 const app = express();
 
+// Config .env
+require('dotenv').config();
+
 // Connect to MongoDB
 connectDB();
 
