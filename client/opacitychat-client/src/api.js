@@ -60,3 +60,19 @@ export const fetchUsers = async () => {
     throw error;
   }
 };
+
+// retrieve message history
+export const fetchMessages = async (user1, user2) => {
+  try {
+    const token = getToken();
+    const response = await axios.get(`${API_BASE_URL}/messages/history/${user1}/${user2}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw error;
+  }
+}
