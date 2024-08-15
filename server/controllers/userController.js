@@ -50,3 +50,19 @@ exports.getProfile = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+// get all the users in database
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const loggedInUserId = decoded.id;
+
+    const users = await User.find({ _id: { $ne: loggedInUserId } }).select('username email');
+
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
