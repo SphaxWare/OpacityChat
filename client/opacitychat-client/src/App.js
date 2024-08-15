@@ -1,17 +1,20 @@
 import React from 'react';
 import './App.css';
-import Register from './Register';
-import Login from './Login';
+import FormCard from './FormCard';
+import UserList from './UserList'; 
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>OpacityChat</h1>
-        <Register />
-        <Login />
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<FormCard />} />
+          <Route path="/users" element={<UserList />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

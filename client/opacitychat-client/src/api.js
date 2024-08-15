@@ -44,3 +44,19 @@ export const profileUser = async () => {
         throw error;
     }
 };
+
+// get all users
+export const fetchUsers = async () => {
+  try {
+    const token = getToken();
+    const response = await axios.get(`${API_BASE_URL}/users/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
