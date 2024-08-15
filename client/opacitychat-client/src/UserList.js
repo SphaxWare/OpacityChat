@@ -54,7 +54,7 @@ const UserList = () => {
             try {
                 const user = await profileUser();
                 setCurrentUser(user);
-    
+
                 if (selectedUser) {
                     const messagesData = await fetchMessages(selectedUser._id, user._id);
                     setMessages(messagesData);
@@ -65,10 +65,10 @@ const UserList = () => {
                 navigate("/login");
             }
         };
-    
+
         getCurrentUserAndMessages();
     }, [selectedUser, navigate]);
-    
+
 
     if (error) {
         return <div>{error}</div>;
@@ -121,9 +121,16 @@ const UserList = () => {
                 </div>
                 <div className="chat-box">
                     {messages.map((msg, index) => (
-                        <div key={index} className="message">
-                            <span className="message-text">{msg.text}</span>
-                            <span className="message-timestamp">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                        <div
+                            key={index}
+                            className={`message ${msg.sender === currentUser._id ? 'my-message' : 'their-message'}`}
+                        >
+                            <div className="message-content">
+                                <span className="message-text">{msg.text}</span>
+                                <span className="message-timestamp">
+                                    {new Date(msg.timestamp).toLocaleTimeString()}
+                                </span>
+                            </div>
                         </div>
                     ))}
                 </div>

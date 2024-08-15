@@ -1,3 +1,4 @@
+/* Existing styles */
 .user-list-container {
     perspective: 1000px;
     width: 450px;
@@ -79,12 +80,61 @@
 }
 
 .chat-box {
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    background-color: #ececec; /* WhatsApp-like background */
+    background-color: #ececec;
     padding: 10px;
     overflow-y: auto;
 }
 
+/* New styles for the messages */
+.message {
+    margin: 10px 0;
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* My messages (sent by current user) */
+.my-message {
+    align-self: flex-end;
+    background-color: #ff4747;
+    border-top-right-radius: 0;
+    margin-right: 0px;
+}
+
+/* Messages sent by the other user */
+.their-message {
+    align-self: flex-start;
+    background-color: #2b2b2b;
+    border-top-left-radius: 0;
+}
+
+/* Message content container */
+.message-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Message text */
+.message-text {
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+/* Message timestamp */
+.message-timestamp {
+    font-size: 12px;
+    color: #bebebe;
+    align-self: flex-end;
+}
+
+/* Existing styles for chat input */
 .chat-input {
     display: flex;
     padding: 10px;
