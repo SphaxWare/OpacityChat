@@ -140,6 +140,12 @@ const UserList = () => {
                         placeholder="Type a message..."
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) { // Handle Enter key press
+                                e.preventDefault(); // Prevent default Enter key behavior
+                                handleSend(); // Call the send function
+                            }
+                        }}
                     />
                     <button onClick={handleSend}><FaAngleUp /></button>
                 </div>
