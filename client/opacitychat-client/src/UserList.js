@@ -7,7 +7,10 @@ import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 
 // Connect to the backend WebSocket server
-const socket = io('http://localhost:5000');
+console.log(process.env.REACT_APP_BACKEND_PROD)
+console.log(process.env.REACT_APP_API_PROD_URL)
+
+const socket = io(process.env.REACT_APP_BACKEND_PROD);
 
 const UserList = () => {
     const [users, setUsers] = useState([]);

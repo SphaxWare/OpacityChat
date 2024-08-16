@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_PROD_URL;
 
 export const registerUser = async (userData) => {
   try {
@@ -14,7 +14,7 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (userData) => {
   try {
-    console.log('API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
+    console.log('API_BASE_URL:', process.env.REACT_APP_API_PROD_URL);
     const response = await axios.post(`${API_BASE_URL}/users/login`, userData);
     const { token } = response.data;
     // set the token on client's local storage

@@ -9,9 +9,11 @@ const Message = require('./models/Message');
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.11.100:3000', 'http://127.0.0.1:3000'];
+
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: allowedOrigins,
         methods: ["GET", "POST"]
     }
 });
@@ -24,7 +26,9 @@ require('dotenv').config();
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins,
+}));
 app.use(express.json());
 
 // Routes
