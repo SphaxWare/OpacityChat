@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loginUser } from './api';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,14 @@ const Login = ({ toggleForm }) => {
   const [message, setMessage] = useState('');
   const [messageClass, setMessageClass] = useState('');
   const navigate = useNavigate();
+
+    // Check if the user is already authenticated
+    useEffect(() => {
+      const isAuthenticated = localStorage.getItem('jwtToken');
+      if (isAuthenticated) {
+        navigate('/users');
+      }
+    }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +28,7 @@ const Login = ({ toggleForm }) => {
         // logic to redirect the user to the user list page
         setTimeout(() => {
           navigate('/users')
-        }, 1000)
+        }, 250)
 
         }
     } catch (error) {

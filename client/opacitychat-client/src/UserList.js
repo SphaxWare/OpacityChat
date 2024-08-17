@@ -42,7 +42,9 @@ const UserList = () => {
         const getCurrentUserAndMessages = async () => {
             try {
                 const user = await profileUser();
-                setCurrentUser(user);
+                if (user) {
+                    setCurrentUser(user);
+                }
 
                 if (selectedUser) {
                     const messagesData = await fetchMessages(selectedUser._id, user._id);
@@ -110,12 +112,23 @@ const UserList = () => {
 
     return (
         <div className={`user-list-container ${selectedUser ? 'flipped' : ''}`}>
-            <div className="user-list">
+            <div className="user-list users-list">
                 <h2>Available Users to Chat</h2>
                 <ul>
-                    {users.map(user => (
-                        <li key={user._id} onClick={() => handleUserClick(user)}>
-                            {user.username} - {user.email}
+                    {users.map((user) => (
+                        <li key={user._id} onClick={() => handleUserClick(user)} className="user-item">
+                            <img
+                                className="user-profile-pic"
+                                src={user.profilePic || 'default-avatar.png'}
+                                alt="Profile"
+                            />
+                            <div className="users-info">
+                                <div className="username">{user.username}</div>
+                                <div className="bio">users's bio users's biousers's biousers's123456789</div> {/* Placeholder for last message */}
+                            </div>
+                            <div className={`status ${user.isOnline ? 'online' : 'offline'}`}>
+                                {user.isOnline ? 'Online' : 'Offline'}
+                            </div>
                         </li>
                     ))}
                 </ul>
@@ -127,7 +140,7 @@ const UserList = () => {
                         <img className="profile-pic" src={selectedUser?.profilePic || 'default-avatar.png'} alt="Profile" />
                         <div className="user-details">
                             <div className="username">{selectedUser?.username}</div>
-                            <div className="status">{selectedUser?.isOnline ? 'Online' : 'Offline'}</div>
+                            <div className={`status ${selectedUser?.isOnline ? 'Online' : 'Offline'}`}>{selectedUser?.isOnline ? 'Online' : 'Offline'}</div>
                         </div>
                     </div>
                 </div>
