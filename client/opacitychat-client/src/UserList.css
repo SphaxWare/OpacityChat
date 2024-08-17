@@ -34,6 +34,7 @@
 .users-list ul {
     margin: auto;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .user-item {
@@ -239,4 +240,48 @@
     background-color: #ffffff;
     color: #f60b0b;
     border: 0.1px solid red;
+}
+
+/* Current user css*/
+.current-user-profile {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+
+.current-user-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.current-user-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.current-username {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.logout-button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: 0.25px solid red;
+    border-radius: 5px;
+    background-color: #ff0000;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #ffffff;
+    color: red;
 }

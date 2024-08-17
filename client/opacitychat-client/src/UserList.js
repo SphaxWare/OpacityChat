@@ -36,36 +36,48 @@ const UserList = () => {
         getUsers();
     }, []);
 
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            try {
+                const user = await profileUser();
+                console.log(user)
+                if (user) {
+                    setCurrentUser(user);
+                }
+            } catch (error) {
+                setError('Error fetching user');
+                console.error('Error fetching user:', error);
+                navigate("/login");
+            }
+        };
+        getCurrentUser();
+    }, [navigate]);
+    
 
     // Fetch previous messages when a user is selected
     useEffect(() => {
         const getCurrentUserAndMessages = async () => {
             try {
-                const user = await profileUser();
-                if (user) {
-                    setCurrentUser(user);
-                }
-
-                if (selectedUser) {
+                const user = currentUser
+                if (selectedUser && user) {
                     const messagesData = await fetchMessages(selectedUser._id, user._id);
                     setMessages(messagesData);
                 }
             } catch (error) {
                 setError('Error getting user or messages');
                 console.error('Error:', error);
-                navigate("/login");
             }
         };
 
         getCurrentUserAndMessages();
-    }, [selectedUser, navigate]);
+    }, [selectedUser, navigate, currentUser]);
 
     // receive messages from other sockets
     useEffect(() => {
         if (selectedUser) {
             console.log(`Joining room: ${currentUser._id}`);
             socket.emit('joinRoom', currentUser._id);
-
+            console.log(currentUser)
             socket.on('message', (message) => {
                 console.log('Message received:', message);
                 if (
@@ -88,6 +100,10 @@ const UserList = () => {
         return <div>{error}</div>;
     }
 
+    if (currentUser === null) {
+        return <div>Loading...</div>;
+    }
+
     const handleUserClick = (user) => {
         setSelectedUser(user);
     };
@@ -95,6 +111,11 @@ const UserList = () => {
     const handleBack = () => {
         setSelectedUser(null);
         setMessages([]);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("jwtToken");
+        navigate("/login");
     };
 
     const handleSend = () => {
@@ -113,6 +134,17 @@ const UserList = () => {
     return (
         <div className={`user-list-container ${selectedUser ? 'flipped' : ''}`}>
             <div className="user-list users-list">
+                <div className="current-user-profile">
+                    <img
+                        className="current-user-pic"
+                        src={currentUser.profilePic || 'default-avatar.png'}
+                        alt="Profile"
+                    />
+                    <div className="current-user-info">
+                        <div className="current-username">{currentUser.username}</div>
+                        <button className="logout-button" onClick={handleLogout}>Logout</button>
+                    </div>
+                </div>
                 <h2>Available Users to Chat</h2>
                 <ul>
                     {users.map((user) => (
