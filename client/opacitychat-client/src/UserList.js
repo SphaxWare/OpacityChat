@@ -36,20 +36,6 @@ const UserList = () => {
         getUsers();
     }, []);
 
-    useEffect(() => {
-        if (selectedUser) {
-            socket.emit('joinRoom', selectedUser._id);
-
-            socket.on('message', (message) => {
-                setMessages((prevMessages) => [...prevMessages, message]);
-            });
-
-            return () => {
-                socket.emit('leaveRoom');
-                socket.off('message');
-            };
-        }
-    }, [selectedUser]);
 
     // Fetch previous messages when a user is selected
     useEffect(() => {
@@ -71,6 +57,29 @@ const UserList = () => {
 
         getCurrentUserAndMessages();
     }, [selectedUser, navigate]);
+
+    // receive messages from other sockets
+    useEffect(() => {
+        if (selectedUser) {
+            console.log(`Joining room: ${currentUser._id}`);
+            socket.emit('joinRoom', currentUser._id);
+
+            socket.on('message', (message) => {
+                console.log('Message received:', message);
+                if (
+                    (message.sender === currentUser._id && message.recipient === selectedUser._id) ||
+                    (message.sender === selectedUser._id && message.recipient === currentUser._id)
+                ) {
+                    setMessages((prevMessages) => [...prevMessages, message]);
+                }
+            });
+
+            return () => {
+                console.log(`Leaving room: ${currentUser._id}`);
+                socket.off('message');
+            };
+        }
+    }, [selectedUser, currentUser]);
 
 
     if (error) {

@@ -39,25 +39,54 @@ app.use('/api/messages', require('./routes/messageRoutes'));
 app.use(express.static('public'));
 
 // Socket.io connection
+const userSocketMap = new Map(); // link socketid with the right user
 io.on('connection', (socket) => {
     console.log('A user connected');
+    console.log(socket.id)
+
+    socket.on('joinRoom', (userId) => {
+        userSocketMap.set(userId, socket.id);
+        console.log(`User ID ${userId} is associated with socket ID ${socket.id}`);
+        socket.join(userId);
+    });
 
     socket.on('sendMessage', async (message) => {
         console.log('Message received:', message);
         try {
-            // Ensure the message includes all required fields
             if (!message.sender || !message.recipient || !message.text) {
                 throw new Error('Invalid message data');
             }
-            await Message.create(message); // Save message to database
-            io.emit('message', message); // Broadcast message to all connected clients
+    
+            await Message.create(message); // Save message to the database
+    
+            const recipientSocketId = userSocketMap.get(message.recipient);
+            const senderSocketId = userSocketMap.get(message.sender);
+            
+            // Emit the message to both sender and recipient
+            if (recipientSocketId) {
+                io.to(recipientSocketId).emit('message', message);
+                console.log(`Message sent to socket ID: ${recipientSocketId} with user ID: ${message.recipient}`);
+                console.log(userSocketMap)
+            } else {
+                console.log(`User ${message.recipient} is not connected`);
+            }
+            // Emit the message back to the sender
+            if (senderSocketId) {
+                io.to(senderSocketId).emit('message', message);
+                console.log(`Message sent back to sender socket ID: ${senderSocketId} with user ID: ${message.sender}`);
+            }
         } catch (error) {
-            console.error('Error saving message:', error);
+            console.error('Error sending message:', error);
         }
     });
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
+    socket.on('disconnect', (userId) => {
+        userSocketMap.forEach((value, key) => {
+            if (value === socket.id) {
+                userSocketMap.delete(key);
+            }
+        });
+        console.log(`User with id ${userId} and socket id ${socket.id} disconnected`);
     });
 });
 

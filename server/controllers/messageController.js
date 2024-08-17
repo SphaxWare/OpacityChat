@@ -28,7 +28,6 @@ exports.getMessageHistory = async (req, res) => {
         }).sort({ timestamp: 1 });
 
         res.json(messages);
-        console.log(messages)
     } catch (error) {
         console.error('Error fetching messages:', error);
         res.status(500).send('Server Error');
