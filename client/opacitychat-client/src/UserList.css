@@ -376,3 +376,19 @@
     transition-duration: 500ms;
     border-radius: 80%;
 }
+
+.date-divider {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #888; /* A light gray color for the date text */
+    font-weight: bold;
+}
+
+.date-divider span {
+    background-color: #ffffff; /* A light background for the date text */
+    padding: 5px 10px;
+    border: 1px #888 solid;
+    border-radius: 20px;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef  } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fetchUsers, profileUser, fetchMessages } from './api';
 import io from 'socket.io-client';
 import './UserList.css';
@@ -64,7 +64,7 @@ const UserList = () => {
         };
         getCurrentUser();
     }, [navigate]);
-    
+
 
     // Fetch previous messages when a user is selected
     useEffect(() => {
@@ -136,10 +136,30 @@ const UserList = () => {
                 sender: currentUser._id, // Sender ID
                 recipient: selectedUser._id, // Recipient's ID
                 text: newMessage, // Text of the message
-                timestamp : new Date()
+                timestamp: new Date()
             };
             socket.emit('sendMessage', message);
             setNewMessage('');
+        }
+    };
+
+    const formatDate = (date) => {
+        const today = new Date();
+        const yesterday = new Date(today);
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          };
+        yesterday.setDate(today.getDate() - 1);
+    
+        if (date.toDateString() === today.toDateString()) {
+            return "Today";
+        } else if (date.toDateString() === yesterday.toDateString()) {
+            return "Yesterday";
+        } else {
+            return date.toLocaleDateString('en', options); // Default to MM/DD/YYYY
         }
     };
 
@@ -191,19 +211,28 @@ const UserList = () => {
                     </div>
                 </div>
                 <div className="chat-box" ref={chatBoxRef}>
-                    {messages.map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`message ${msg.sender === currentUser._id ? 'my-message' : 'their-message'}`}
-                        >
-                            <div className="message-content">
-                                <span className="message-text">{msg.text}</span>
-                                <span className="message-timestamp">
-                                    {new Date(msg.timestamp).toLocaleTimeString()}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                    {messages.map((msg, index) => {
+                        const currentMessageDate = new Date(msg.timestamp).toDateString();
+                        const previousMessageDate = index > 0 ? new Date(messages[index - 1].timestamp).toDateString() : null;
+
+                        return (
+                            <React.Fragment key={index}>
+                                {currentMessageDate !== previousMessageDate && (
+                                    <div className="date-divider">
+                                        <span>{formatDate(new Date(msg.timestamp))}</span>
+                                    </div>
+                                )}
+                                <div className={`message ${msg.sender === currentUser._id ? 'my-message' : 'their-message'}`}>
+                                    <div className="message-content">
+                                        <span className="message-text">{msg.text}</span>
+                                        <span className="message-timestamp">
+                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                        );
+                    })}
                 </div>
                 <div className="chat-input">
                     <input
