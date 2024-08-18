@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef  } from 'react';
 import { fetchUsers, profileUser, fetchMessages } from './api';
 import io from 'socket.io-client';
 import './UserList.css';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
+import { CgLogOff } from "react-icons/cg";
+
 
 // Connect to the backend WebSocket server
 console.log(process.env.REACT_APP_BACKEND_PROD)
@@ -20,7 +22,14 @@ const UserList = () => {
     const [newMessage, setNewMessage] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
+    const chatBoxRef = useRef(null);
 
+    // scroll down when new message arrive
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        }
+    }, [messages]); // This effect runs every time `messages` changes
 
     useEffect(() => {
         const getUsers = async () => {
@@ -142,10 +151,12 @@ const UserList = () => {
                     />
                     <div className="current-user-info">
                         <div className="current-username">{currentUser.username}</div>
-                        <button className="logout-button" onClick={handleLogout}>Logout</button>
+                        <button className="logout-button" onClick={handleLogout}><CgLogOff />
+
+                        </button>
                     </div>
                 </div>
-                <h2>Available Users to Chat</h2>
+                <h2>Available Users</h2>
                 <ul>
                     {users.map((user) => (
                         <li key={user._id} onClick={() => handleUserClick(user)} className="user-item">
@@ -176,7 +187,7 @@ const UserList = () => {
                         </div>
                     </div>
                 </div>
-                <div className="chat-box">
+                <div className="chat-box" ref={chatBoxRef}>
                     {messages.map((msg, index) => (
                         <div
                             key={index}
