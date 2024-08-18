@@ -384,11 +384,27 @@
     font-size: 14px;
     color: #888; /* A light gray color for the date text */
     font-weight: bold;
+    transition: 500ms ease;
+}
+
+.date-divider:hover {
+    font-size: 14px;
+    color: #fcfcfc; /* A light gray color for the date text */
+    font-weight: bold;
+    transition: 500ms ease;
 }
 
 .date-divider span {
     background-color: #ffffff; /* A light background for the date text */
     padding: 5px 10px;
     border: 1px #888 solid;
+    border-radius: 20px;
+    transition: 500ms ease;
+}
+
+.date-divider span:hover {
+    background-color: #888; /* A light background for the date text */
+    padding: 5px 10px;
+    border: 1px #ffffff solid;
     border-radius: 20px;
 }

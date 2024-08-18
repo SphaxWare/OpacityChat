@@ -12,7 +12,7 @@ import { CgLogOff } from "react-icons/cg";
 console.log(process.env.REACT_APP_BACKEND_PROD)
 console.log(process.env.REACT_APP_API_PROD_URL)
 
-const socket = io(process.env.REACT_APP_BACKEND_PROD);
+const socket = io(process.env.REACT_APP_BACKEND_PROD)
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -36,6 +36,7 @@ const UserList = () => {
             try {
                 const usersData = await fetchUsers();
                 setUsers(usersData);
+                console.log(usersData);
             } catch (error) {
                 setError('Error fetching users');
                 console.error('Error fetching users:', error);
@@ -52,6 +53,7 @@ const UserList = () => {
                 console.log(user)
                 if (user) {
                     setCurrentUser(user);
+                    socket.emit('userOnline', user._id);
                 }
                 else {
                     navigate("/login")
@@ -63,8 +65,26 @@ const UserList = () => {
             }
         };
         getCurrentUser();
+        return () => {
+            // Clean up on component unmount
+            socket.off('updateUserStatus');
+        };
     }, [navigate]);
 
+    useEffect(() => {
+        // Listen for 'updateUserStatus' event to update user status in the client
+        socket.on('updateUserStatus', ({ userId, isOnline }) => {
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user._id === userId ? { ...user, isOnline } : user
+                )
+            );
+        });
+
+        return () => {
+            socket.off('updateUserStatus');
+        };
+    }, []);
 
     // Fetch previous messages when a user is selected
     useEffect(() => {
@@ -78,6 +98,7 @@ const UserList = () => {
             } catch (error) {
                 setError('Error getting user or messages');
                 console.error('Error:', error);
+                navigate('/login')
             }
         };
 
@@ -106,6 +127,20 @@ const UserList = () => {
             };
         }
     }, [selectedUser, currentUser]);
+
+    useEffect(() => {
+        socket.on('updateUserStatus', ({ userId, isOnline }) => {
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user._id === userId ? { ...user, isOnline } : user
+                )
+            );
+        });
+    
+        return () => {
+            socket.off('updateUserStatus');
+        };
+    }, [setUsers]);
 
 
     if (error) {
@@ -151,9 +186,9 @@ const UserList = () => {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-          };
+        };
         yesterday.setDate(today.getDate() - 1);
-    
+
         if (date.toDateString() === today.toDateString()) {
             return "Today";
         } else if (date.toDateString() === yesterday.toDateString()) {

@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  isOnline: { 
+    type: Boolean,
+     default: false 
+    },
 });
 
 UserSchema.pre('save', async function (next) {

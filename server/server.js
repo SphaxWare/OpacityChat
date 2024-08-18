@@ -5,6 +5,7 @@ const socketIo = require('socket.io');
 const connectDB = require('./utils/db');
 const cors = require('cors');
 const Message = require('./models/Message');
+const User = require('./models/User');
 
 const app = express();
 const server = http.createServer(app);
@@ -44,6 +45,18 @@ io.on('connection', (socket) => {
     console.log('A user connected');
     console.log(socket.id)
 
+    socket.on('userOnline', async (userId) => {
+        try {
+            const user = await User.findByIdAndUpdate(userId, { isOnline: true }, { new: true }).exec();
+            if (user) {
+                io.emit('updateUserStatus', { userId, isOnline: true });
+                console.log('User', user.username, 'is NOW ONLINE !!!!!');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
     socket.on('joinRoom', (userId) => {
         userSocketMap.set(userId, socket.id);
         console.log(`User ID ${userId} is associated with socket ID ${socket.id}`);
@@ -56,12 +69,14 @@ io.on('connection', (socket) => {
             if (!message.sender || !message.recipient || !message.text) {
                 throw new Error('Invalid message data');
             }
+
             message.timestamp = new Date();
+
             await Message.create(message); // Save message to the database
-    
+
             const recipientSocketId = userSocketMap.get(message.recipient);
             const senderSocketId = userSocketMap.get(message.sender);
-            
+
             // Emit the message to both sender and recipient
             if (recipientSocketId) {
                 io.to(recipientSocketId).emit('message', message);
@@ -80,13 +95,22 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', (userId) => {
-        userSocketMap.forEach((value, key) => {
+    socket.on('disconnect', () => {
+        userSocketMap.forEach(async (value, key) => {
             if (value === socket.id) {
                 userSocketMap.delete(key);
+                try {
+                    const user = await User.findByIdAndUpdate(key, { isOnline: false }, { new: true }).exec();
+                    if (user) {
+                        io.emit('updateUserStatus', { userId: key, isOnline: false });
+                        console.log('User', user.username, 'IS NOW OFFLINE !!!!!!!!!!');
+                    }
+                } catch (err) {
+                    console.error('Error marking user as offline:', err);
+                }
             }
         });
-        console.log(`User with id ${userId} and socket id ${socket.id} disconnected`);
+        console.log(`User with socket id ${socket.id} disconnected`);
     });
 });
 
