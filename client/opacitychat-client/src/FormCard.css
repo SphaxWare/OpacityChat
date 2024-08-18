@@ -1,9 +1,7 @@
 .container {
-  width: 450px;
-  /* Set width of the container */
-  height: 669px;
-  /* Set height of the container */
   perspective: 1000px;
+  width: 450px;
+  height: 668px;
   /* 3D perspective */
   background-color: rgb(255, 255, 255);
 }
@@ -26,23 +24,49 @@
   height: 100%;
   background-color: rgb(255, 255, 255);
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   box-sizing: border-box;
   backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .form h1 {
   text-align: center;
   margin-bottom: 30px;
-  font-size: 24px;
+  font-size: 50px;
+  transition: 1000ms ease;
+  cursor: default;
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(255, 0, 0);
 }
+.form h1:hover{
+  transition: 1000ms ease;
+  font-size: 65px;
+  color: red;
+}
+
+.form h2{
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(0, 0, 0);
+  transition: 5000s ease-out;
+}
+.form h2:hover{
+  color: rgb(0, 0, 0);
+  transition: 500ms ease-in-out;
+}
+
 
 .form input[type="text"],
 .form input[type="email"],
 .form input[type="password"] {
-  width: 100%;
+  width: 400px;
   padding: 10px;
+  height: 40px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -50,22 +74,24 @@
 }
 
 .form button {
-  width: 100%;
+  width: 80%;
   padding: 10px;
-  background-color: #ce2525;
-  color: white;
+  background-color: #ffffff;
+  color: #ce2525;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition-duration: 600ms;
+  border: solid #ce2525 2px;
+  transition: 500ms ease;
 }
 
 .form button:hover {
-  background-color: #ffffff;
-  color: #ce2525;
+  background-color: #ce2525;
+  color: white;
   border: solid #ce2525 2px;
-  transition-duration: 600ms;
+  width: 100%;
+  transition: 500ms ease;
 }
 
 .form .toggle-link {
@@ -84,12 +110,25 @@ h1 {
   color: red;
 }
 
-.fail{
-  color: rgb(221, 0, 0);
-  text-shadow: 1px 1px #ff000056;
+.fail {
+  color: rgb(255, 0, 0);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(255, 0, 0);
+  transition: 500ms ease;
+  height: 20px;
+  width: 300px;
+  font-weight: bold;
+  font-size: 20px;
 }
 
-.success{
-  color: rgb(43, 255, 0);
-  text-shadow: 1px 1px #15ff003b;
+.success {
+  color: rgb(9, 255, 0);
+  transition: 500ms ease;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(43, 255, 0);
+  height: 20px;
+  width: 300px;
+  font-weight: bold;
+  font-size: 20px;
 }
+

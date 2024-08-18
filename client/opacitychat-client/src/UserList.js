@@ -156,7 +156,7 @@ const UserList = () => {
                         </button>
                     </div>
                 </div>
-                <h2>Available Users</h2>
+                <h2>Select A User To Chat</h2>
                 <ul>
                     {users.map((user) => (
                         <li key={user._id} onClick={() => handleUserClick(user)} className="user-item">
@@ -167,7 +167,7 @@ const UserList = () => {
                             />
                             <div className="users-info">
                                 <div className="username">{user.username}</div>
-                                <div className="bio">users's bio users's biousers's biousers's123456789</div> {/* Placeholder for last message */}
+                                <div className="bio">users's bio users's</div> {/* Placeholder for last message */}
                             </div>
                             <div className={`status ${user.isOnline ? 'online' : 'offline'}`}>
                                 {user.isOnline ? 'Online' : 'Offline'}

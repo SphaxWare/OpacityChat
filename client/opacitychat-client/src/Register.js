@@ -27,7 +27,7 @@ const Register = ({ toggleForm }) => {
   return (
     <div className="form register-form">
       <h1>Opacity Chat</h1>
-      <h2>Register</h2>
+      <h2>Create Your Account !</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"

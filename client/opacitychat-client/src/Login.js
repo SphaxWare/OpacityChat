@@ -40,7 +40,7 @@ const Login = ({ toggleForm }) => {
   return (
     <div className="form login-form">
       <h1>Opacity Chat</h1>
-      <h2>Login</h2>
+      <h2>Log in to your account</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"

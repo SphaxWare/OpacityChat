@@ -1,4 +1,23 @@
 /* Existing styles */
+
+.users-list h2 {
+    color: black;
+    transition: ease;
+    transition-duration: 500ms;
+    cursor: default;
+    font-size: 30px;
+}
+
+
+.users-list h2:hover {
+    color: white;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    transition: ease;
+    transition-duration: 500ms;
+    font-size: 40px;
+}
+
 .user-list-container {
     perspective: 1000px;
     width: 450px;
@@ -44,11 +63,13 @@
     background-color: #f5f5f5;
     border-radius: 18px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.5s ease;
 }
 
 .user-item:hover {
-    background-color: #e0e0e0;
+    background-color: #a3a3a39c;
+    transition: 500ms ease;
+    padding-bottom: 20px;
 }
 
 .user-profile-pic {
@@ -117,6 +138,18 @@
     border-top-right-radius: 15px
 }
 
+.chat-header svg{
+    color: #000000;
+    transition: ease-in-out;
+    transition-duration: 500ms;
+}
+.chat-header svg:hover{
+    color: #ff0000;
+    transition: ease-in-out;
+    transition-duration: 500ms;
+    width: 50px;
+}
+
 .back-icon {
     font-size: 24px;
     cursor: pointer;
@@ -166,24 +199,24 @@
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: red; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: red;
     border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #000000; 
-  }
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #000000;
+}
 
 /* New styles for the messages */
 .message {
@@ -257,12 +290,19 @@
     padding: 10px 20px;
     cursor: pointer;
     border: 0.1px solid rgb(255, 255, 255);
+    transition: ease;
+    transition-duration: 500ms;
+    width: 55px;
 }
 
 .chat-input button:hover {
     background-color: #ffffff;
     color: #f60b0b;
     border: 0.1px solid red;
+    transition: ease;
+    transition-duration: 500ms;
+    width: 65px;
+    
 }
 
 /* Current user css*/
@@ -272,6 +312,8 @@
     padding: 10px;
     background-color: #f5f5f5;
     border-bottom: 1px solid #ddd;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
 .current-user-pic {
@@ -290,28 +332,43 @@
 }
 
 .current-username {
+    color: white;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
     font-weight: bold;
-    font-size: 26px;
+    font-size: 30px;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: 500ms ease-in-out;
+}
+.current-username:hover{
+    transition: 500ms ease-in-out;
+    color: rgb(0, 0, 0);
 }
 
 .logout-button {
     margin-bottom: 5px;
     padding-top: 4px;
     border: 0.25px solid red;
-    border-radius: 5px;
-    background-color: #ff0000;
-    color: white;
+    background-color: #ffffff;
+    color: red;
     cursor: pointer;
     font-size: 24px;
     transition: background-color 0.3s ease;
     font-weight: bold;
+    transition: ease;
+    border-radius: 40%;
+    transition-duration: 500ms;
 }
 
 .logout-button:hover {
     background-color: #ffffff;
     color: red;
+    background-color: #ff0000;
+    color: white;
+    transition: ease;
+    transition-duration: 500ms;
+    border-radius: 80%;
 }
