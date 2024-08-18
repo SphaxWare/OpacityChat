@@ -53,6 +53,9 @@ const UserList = () => {
                 if (user) {
                     setCurrentUser(user);
                 }
+                else {
+                    navigate("/login")
+                }
             } catch (error) {
                 setError('Error fetching user');
                 console.error('Error fetching user:', error);

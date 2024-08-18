@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loginUser } from './api';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = ({ toggleForm }) => {
   const [email, setEmail] = useState('');
@@ -11,9 +12,26 @@ const Login = ({ toggleForm }) => {
 
     // Check if the user is already authenticated
     useEffect(() => {
-      const isAuthenticated = localStorage.getItem('jwtToken');
-      if (isAuthenticated) {
-        navigate('/users');
+      const token = localStorage.getItem('jwtToken');
+    
+      if (token) {
+        try {
+          const decodedToken = jwtDecode(token);
+          const currentTime = Date.now() / 1000; // Current time in seconds
+  
+          if (decodedToken.exp < currentTime) {
+            // Token has expired
+            localStorage.removeItem('jwtToken');
+            navigate('/login'); // Redirect to login
+          } else {
+            // Token is valid
+            navigate('/users'); // Redirect to users
+          }
+        } catch (error) {
+          console.error('Invalid token', error);
+          localStorage.removeItem('jwtToken');
+          navigate('/login'); // Redirect to login
+        }
       }
     }, [navigate]);
 
@@ -22,11 +40,12 @@ const Login = ({ toggleForm }) => {
     try {
       const data = { email, password };
       const response = await loginUser(data);
+      console.log(response)
       if (response) {
         setMessage('Login successful !');
         setMessageClass('success')
         // logic to redirect the user to the user list page
-        setTimeout(() => {
+         setTimeout(() => {
           navigate('/users')
         }, 250)
 

@@ -39,21 +39,24 @@
   font-size: 50px;
   transition: 1000ms ease;
   cursor: default;
+  color: red;
+  
+}
+.form h1:hover{
+  transition: 500ms ease;
+  font-size: 65px;
   color: white;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: rgb(255, 0, 0);
-}
-.form h1:hover{
-  transition: 1000ms ease;
-  font-size: 65px;
-  color: red;
 }
 
 .form h2{
   color: white;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: rgb(0, 0, 0);
-  transition: 5000s ease-out;
+  transition: 500ms ease-out;
+  cursor: default;
+  font-size: 20px;
 }
 .form h2:hover{
   color: rgb(0, 0, 0);
