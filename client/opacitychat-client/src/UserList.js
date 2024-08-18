@@ -136,7 +136,7 @@ const UserList = () => {
                 sender: currentUser._id, // Sender ID
                 recipient: selectedUser._id, // Recipient's ID
                 text: newMessage, // Text of the message
-                timestamp: new Date(), // Optional field; not used by server
+                timestamp : new Date()
             };
             socket.emit('sendMessage', message);
             setNewMessage('');

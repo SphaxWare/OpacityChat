@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
             if (!message.sender || !message.recipient || !message.text) {
                 throw new Error('Invalid message data');
             }
-    
+            message.timestamp = new Date();
             await Message.create(message); // Save message to the database
     
             const recipientSocketId = userSocketMap.get(message.recipient);

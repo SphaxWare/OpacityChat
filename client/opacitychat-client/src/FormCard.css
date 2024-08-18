@@ -40,11 +40,12 @@
   transition: 1000ms ease;
   cursor: default;
   color: red;
-  
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(255, 0, 0);
 }
 .form h1:hover{
   transition: 500ms ease;
-  font-size: 65px;
+  font-size: 68px;
   color: white;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: rgb(255, 0, 0);
