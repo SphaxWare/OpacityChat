@@ -24,6 +24,18 @@ const UserList = () => {
     const navigate = useNavigate();
     const chatBoxRef = useRef(null);
 
+    // when user close tab he get deconnected
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            socket.emit('userOffline', currentUser._id);
+          };
+      
+          window.addEventListener('beforeunload', handleBeforeUnload);
+          return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+          };
+    }, [currentUser])
+    
     // scroll down when new message arrive
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -70,22 +82,6 @@ const UserList = () => {
             socket.off('updateUserStatus');
         };
     }, [navigate]);
-
-    useEffect(() => {
-        if (selectedUser) {
-            // Listen for status changes
-            socket.on('userStatusChange', ({ userId, isOnline }) => {
-                if (selectedUser._id === userId) {
-                    setSelectedUser((prevUser) => ({ ...prevUser, isOnline }));
-                    socket.emit('updateUserStatus', { userId: selectedUser._id, isOnline });
-                }
-            });
-        }
-    
-        return () => {
-            socket.off('userStatusChange');
-        };
-    }, [selectedUser]);
     
     useEffect(() => {
         // Listen for 'updateUserStatus' event to update user status in the client

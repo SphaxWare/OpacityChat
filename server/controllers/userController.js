@@ -62,7 +62,6 @@ exports.getAllUsers = async (req, res) => {
     const users = await User.find({ _id: { $ne: loggedInUserId } }).select('username email isOnline');
 
     res.json(users);
-    console.log(users)
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }

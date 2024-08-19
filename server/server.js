@@ -112,9 +112,9 @@ io.on('connection', (socket) => {
         userSocketMap.forEach(async (value, key) => {
             if (value === socket.id) {
                 userSocketMap.delete(key);
+                console.log("disconnect ----------------\n value: ", value, "\nkey: ", key, "\nsocket id: ", socket.id)
             }
         });
-        //console.log(`User with socket id ${socket.id} disconnected`);
     });
 });
 
