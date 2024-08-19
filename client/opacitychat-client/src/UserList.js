@@ -6,6 +6,8 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { CgLogOff } from "react-icons/cg";
+import { MdCircle } from "react-icons/md";
+
 
 
 // Connect to the backend WebSocket server
@@ -231,8 +233,8 @@ const UserList = () => {
                                 <div className="username">{user.username}</div>
                                 <div className="bio">users's bio users's</div> {/* Placeholder for last message */}
                             </div>
-                            <div className={`status ${user.isOnline ? 'online' : 'offline'}`}>
-                                {user.isOnline ? 'Online' : 'Offline'}
+                            <div className={`status ${user.isOnline ? 'Online' : 'Offline'}`}>
+                                {user.isOnline ? <MdCircle /> : <MdCircle />}
                             </div>
                         </li>
                     ))}
@@ -245,7 +247,9 @@ const UserList = () => {
                         <img className="profile-pic" src={selectedUser?.profilePic || 'default-avatar.png'} alt="Profile" />
                         <div className="user-details">
                             <div className="username">{selectedUser?.username}</div>
-                            <div className={`status ${selectedUser?.isOnline ? 'Online' : 'Offline'}`}>{selectedUser?.isOnline ? 'Online' : 'Offline'}</div>
+                            <div className={`status ${selectedUser?.isOnline ? 'Online' : 'Offline'}`}>
+                            {selectedUser?.isOnline ? 'Online' : 'Offline'}
+                            </div>
                         </div>
                     </div>
                 </div>
