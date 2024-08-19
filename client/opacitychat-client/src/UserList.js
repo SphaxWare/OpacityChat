@@ -5,13 +5,13 @@ import './UserList.css';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import { CgLogOff } from "react-icons/cg";
+import { CgLogOff } from "react-icons/cg";                                              
 import { MdCircle } from "react-icons/md";
 
 
 
 // Connect to the backend WebSocket server
-console.log(process.env.REACT_APP_BACKEND_PROD)
+console.log(process.env.REACT_APP_BACKEND_PROD)             
 console.log(process.env.REACT_APP_API_PROD_URL)
 
 const socket = io(process.env.REACT_APP_BACKEND_PROD)
@@ -30,14 +30,42 @@ const UserList = () => {
     useEffect(() => {
         const handleBeforeUnload = () => {
             socket.emit('userOffline', currentUser._id);
-          };
-      
-          window.addEventListener('beforeunload', handleBeforeUnload);
-          return () => {
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
-          };
+        };
     }, [currentUser])
-    
+    // when user leave app without closing tab
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            let offlineTimer;
+            if (document.hidden) {
+                // make user offline if he's still not on the windows after 2 min
+                offlineTimer = setTimeout(() => {
+                    socket.emit('userOffline', currentUser._id);
+                    console.log('User is offline due to inactivity for 5 minutes.', navigate.userAgent);
+                },2 * 60 * 1000);
+            } else {
+                clearTimeout(offlineTimer);
+                socket.emit('userOnline', currentUser._id);
+            }
+        };
+
+        const handleBeforeUnload = () => {
+            socket.emit('userOffline', currentUser._id);
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [currentUser, navigate.userAgent]);
+
     // scroll down when new message arrive
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -84,7 +112,7 @@ const UserList = () => {
             socket.off('updateUserStatus');
         };
     }, [navigate]);
-    
+
     useEffect(() => {
         // Listen for 'updateUserStatus' event to update user status in the client
         socket.on('updateUserStatus', ({ userId, isOnline }) => {
@@ -93,12 +121,12 @@ const UserList = () => {
                     user._id === userId ? { ...user, isOnline } : user
                 )
             );
-    
+
             if (selectedUser && selectedUser._id === userId) {
                 setSelectedUser((prevUser) => ({ ...prevUser, isOnline }));
             }
         });
-    
+
         return () => {
             socket.off('updateUserStatus');
         };
@@ -116,6 +144,7 @@ const UserList = () => {
             } catch (error) {
                 setError('Error getting user or messages');
                 console.error('Error:', error);
+                socket.emit('userOffline', currentUser._id);
                 navigate('/login')
             }
         };
@@ -154,6 +183,10 @@ const UserList = () => {
     if (currentUser === null) {
         return <div>Loading...</div>;
     }
+    
+    const sendToProfile = () => {
+        navigate('/profile')
+    }
 
     const handleUserClick = (user) => {
         setSelectedUser(user);
@@ -166,7 +199,6 @@ const UserList = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("jwtToken");
-        console.log(selectedUser)
         socket.emit('userOffline', currentUser._id);
         navigate("/login");
     };
@@ -212,9 +244,10 @@ const UserList = () => {
                         className="current-user-pic"
                         src={currentUser.profilePic || 'default-avatar.png'}
                         alt="Profile"
+                        onClick={sendToProfile}
                     />
                     <div className="current-user-info">
-                        <div className="current-username">{currentUser.username}</div>
+                        <div className="current-username" onClick={sendToProfile}>{currentUser.username}</div>
                         <button className="logout-button" onClick={handleLogout}><CgLogOff />
 
                         </button>
@@ -242,13 +275,13 @@ const UserList = () => {
             </div>
             <div className="chat-interface">
                 <div className="chat-header">
-                    <FaArrowLeft className="back-icon" onClick={handleBack} />
+                <FaArrowLeft className="back-icon" onClick={handleBack} />
                     <div className="user-info">
                         <img className="profile-pic" src={selectedUser?.profilePic || 'default-avatar.png'} alt="Profile" />
                         <div className="user-details">
                             <div className="username">{selectedUser?.username}</div>
                             <div className={`status ${selectedUser?.isOnline ? 'Online' : 'Offline'}`}>
-                            {selectedUser?.isOnline ? 'Online' : 'Offline'}
+                                {selectedUser?.isOnline ? 'Online' : 'Offline'}
                             </div>
                         </div>
                     </div>

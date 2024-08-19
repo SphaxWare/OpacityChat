@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import FormCard from './FormCard';
-import UserList from './UserList'; 
+import UserList from './UserList';
+import Profile from './Profile';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<FormCard />} />
           <Route path="/users" element={<UserList />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
