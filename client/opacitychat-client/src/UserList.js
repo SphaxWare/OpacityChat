@@ -72,6 +72,22 @@ const UserList = () => {
     }, [navigate]);
 
     useEffect(() => {
+        if (selectedUser) {
+            // Listen for status changes
+            socket.on('userStatusChange', ({ userId, isOnline }) => {
+                if (selectedUser._id === userId) {
+                    setSelectedUser((prevUser) => ({ ...prevUser, isOnline }));
+                    socket.emit('updateUserStatus', { userId: selectedUser._id, isOnline });
+                }
+            });
+        }
+    
+        return () => {
+            socket.off('userStatusChange');
+        };
+    }, [selectedUser]);
+    
+    useEffect(() => {
         // Listen for 'updateUserStatus' event to update user status in the client
         socket.on('updateUserStatus', ({ userId, isOnline }) => {
             setUsers((prevUsers) =>
@@ -79,12 +95,16 @@ const UserList = () => {
                     user._id === userId ? { ...user, isOnline } : user
                 )
             );
+    
+            if (selectedUser && selectedUser._id === userId) {
+                setSelectedUser((prevUser) => ({ ...prevUser, isOnline }));
+            }
         });
-
+    
         return () => {
             socket.off('updateUserStatus');
         };
-    }, []);
+    }, [selectedUser, users]);
 
     // Fetch previous messages when a user is selected
     useEffect(() => {
@@ -128,20 +148,6 @@ const UserList = () => {
         }
     }, [selectedUser, currentUser]);
 
-    useEffect(() => {
-        socket.on('updateUserStatus', ({ userId, isOnline }) => {
-            setUsers((prevUsers) =>
-                prevUsers.map((user) =>
-                    user._id === userId ? { ...user, isOnline } : user
-                )
-            );
-        });
-    
-        return () => {
-            socket.off('updateUserStatus');
-        };
-    }, [setUsers]);
-
 
     if (error) {
         return <div>{error}</div>;
@@ -162,6 +168,8 @@ const UserList = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("jwtToken");
+        console.log(selectedUser)
+        socket.emit('userOffline', currentUser._id);
         navigate("/login");
     };
 

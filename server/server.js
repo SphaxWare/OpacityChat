@@ -95,22 +95,26 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('userOffline', async (userId) => {
+        try {
+            const user = await User.findByIdAndUpdate(userId, { isOnline: false }, { new: true }).exec();
+            if (user) {
+                io.emit('updateUserStatus', { userId: userId, isOnline: false });
+                console.log('User', user.username, 'IS NOW OFFLINE !!!!!!!!!!', new Date().toLocaleTimeString());
+                console.log(user.isOnline)
+            }
+        } catch (err) {
+            console.error('Error marking user as offline:', err);
+        }
+    });
+    
     socket.on('disconnect', () => {
         userSocketMap.forEach(async (value, key) => {
             if (value === socket.id) {
                 userSocketMap.delete(key);
-                try {
-                    const user = await User.findByIdAndUpdate(key, { isOnline: false }, { new: true }).exec();
-                    if (user) {
-                        io.emit('updateUserStatus', { userId: key, isOnline: false });
-                        console.log('User', user.username, 'IS NOW OFFLINE !!!!!!!!!!');
-                    }
-                } catch (err) {
-                    console.error('Error marking user as offline:', err);
-                }
             }
         });
-        console.log(`User with socket id ${socket.id} disconnected`);
+        //console.log(`User with socket id ${socket.id} disconnected`);
     });
 });
 
