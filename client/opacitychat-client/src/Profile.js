@@ -11,8 +11,23 @@ const socket = io(process.env.REACT_APP_BACKEND_PROD)
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [profilePic, setProfilePic] = useState('default-avatar.png');
     const [error, setError] = useState(null);
 
+    const arrayBufferToBase64 = (buffer) => {
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.length;
+        let binaryString = '';
+      
+        const chunkSize = 1024;
+        for (let i = 0; i < len; i += chunkSize) {
+            const end = Math.min(i + chunkSize, len);
+            const chunk = String.fromCharCode.apply(null, bytes.subarray(i, end));
+            binaryString += chunk;
+        }
+      
+        return window.btoa(binaryString);
+    };
     useEffect(() => {
         const getCurrentUser = async () => {
             try {
@@ -20,6 +35,9 @@ const Profile = () => {
                 console.log(user)
                 if (user) {
                     setUser(user);
+                    if (user.profilePic && user.profilePic.data) {
+                        loadProfilePicture(user.profilePic.data.data, user.profilePic.contentType);
+                    }
                 } else {
                     navigate("/login")
                 }
@@ -28,11 +46,18 @@ const Profile = () => {
                 console.error('Error fetching user:', error);
                 navigate("/login")
             }
-        }
+        };
+
+        const loadProfilePicture = async (data, contentType) => {
+            const base64String = await arrayBufferToBase64(data);
+            setProfilePic(`data:${contentType};base64,${base64String}`);
+        };
 
         getCurrentUser();
     }, [navigate]);
 
+    
+    
     const handleBack = () => {
         navigate("/")
     };
@@ -65,7 +90,8 @@ const Profile = () => {
                             <MdCircle />
                         </p>
                         <img
-                            src={user?.profilePic || 'default-avatar.png'}
+
+                            src={profilePic || 'default-avatar.png'}
                             alt="Profile"
                         />
                         <div className="profile-username">{user?.username}</div>

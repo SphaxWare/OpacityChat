@@ -88,29 +88,44 @@ const UserList = () => {
         getUsers();
     }, []);
 
+    // Function to convert ArrayBuffer to Base64
+    const arrayBufferToBase64 = (buffer) => {
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.length;
+        let binaryString = '';
+      
+        const chunkSize = 1024;
+        for (let i = 0; i < len; i += chunkSize) {
+            const end = Math.min(i + chunkSize, len);
+            const chunk = String.fromCharCode.apply(null, bytes.subarray(i, end));
+            binaryString += chunk;
+        }
+      
+        return window.btoa(binaryString);
+    };
+
     useEffect(() => {
         const getCurrentUser = async () => {
             try {
                 const user = await profileUser();
                 console.log(user)
                 if (user) {
+                    if (user.profilePic && user.profilePic.data) {
+                        const base64String = arrayBufferToBase64(user.profilePic.data.data);
+                        user.profilePic = `data:${user.profilePic.contentType};base64,${base64String}`;
+                    }
                     setCurrentUser(user);
-                    socket.emit('userOnline', user._id);
-                }
-                else {
+                } else {
                     navigate("/login")
                 }
             } catch (error) {
                 setError('Error fetching user');
                 console.error('Error fetching user:', error);
-                navigate("/login");
+                navigate("/login")
             }
-        };
+        }
+
         getCurrentUser();
-        return () => {
-            // Clean up on component unmount
-            socket.off('updateUserStatus');
-        };
     }, [navigate]);
 
     useEffect(() => {

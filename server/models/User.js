@@ -17,7 +17,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   bio: String,
-  profilePicture: String,
+  profilePic: {
+    data: Buffer, // Store the binary data
+    contentType: String, // Store the file type (e.g., image/jpeg)
+  },
   date: {
     type: Date,
     default: Date.now,

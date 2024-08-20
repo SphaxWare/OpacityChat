@@ -71,14 +71,20 @@
     margin: 0px;
     width: 200px;
     height: 200px;
+    border-radius: 50%;
+    border: solid rgb(193, 193, 193);
+    transition: 500ms ease;
+}
+
+.profile-page img:hover {
+    width: 300px;
+    height: 300px;
     border-radius: 5px;
     transition: 500ms ease;
 }
 
-.profile-page img:hover{
-    width: 300px;
-    height: 300px;
-    border-radius: 5px;
+.profile-page img:hover + p {
+    display: none;
 }
 
 .profile-page p {
@@ -87,7 +93,7 @@
     top: 60px;
 }
 .profile-username{
-    margin-top: -30px;
+    margin-top: -10px;
     font-weight: bold;
     font-size: 55px;
     transition: 500ms ease;

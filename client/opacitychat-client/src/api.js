@@ -4,7 +4,19 @@ const API_BASE_URL = process.env.REACT_APP_API_PROD_URL;
 
 export const registerUser = async (userData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/users/register`, userData);
+    const formData = new FormData();
+    formData.append('username', userData.username);
+    formData.append('email', userData.email);
+    formData.append('password', userData.password);
+    if (userData.profilePic) {
+      formData.append('profilePic', userData.profilePic);
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/users/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error during registration:', error);
@@ -27,22 +39,22 @@ export const loginUser = async (userData) => {
 };
 
 const getToken = () => {
-    return localStorage.getItem('jwtToken');
+  return localStorage.getItem('jwtToken');
 };
 
 export const profileUser = async () => {
-    try {
-        const token = getToken(); 
-        const response = await axios.get(`${API_BASE_URL}/users/profile`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error accessing profile:', error);
-        throw error;
-    }
+  try {
+    const token = getToken();
+    const response = await axios.get(`${API_BASE_URL}/users/profile`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error accessing profile:', error);
+    throw error;
+  }
 };
 
 // get all users
