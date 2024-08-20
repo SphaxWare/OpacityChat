@@ -1,0 +1,10 @@
+/* LoadingBar.css */
+.loading-page {
+        min-height: 570px;
+        display: flex;
+        flex-direction: column;
+        align-items: center ;
+        list-style-type: none;
+        overflow: hidden;
+        justify-content: center;
+  }

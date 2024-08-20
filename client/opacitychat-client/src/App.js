@@ -3,6 +3,7 @@ import './App.css';
 import FormCard from './FormCard';
 import UserList from './UserList';
 import Profile from './Profile';
+import Loading from './loading';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<FormCard />} />
           <Route path="/users" element={<UserList />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/loading" element={<Loading />} />
         </Routes>
       </div>
     </Router>

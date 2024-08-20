@@ -5,7 +5,8 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { CgLogOff } from "react-icons/cg";
 import io from 'socket.io-client';
 import './Profile.css';
-import { MdCircle } from "react-icons/md";
+import Loading from './loading.js';
+
 
 const socket = io(process.env.REACT_APP_BACKEND_PROD)
 const Profile = () => {
@@ -18,14 +19,14 @@ const Profile = () => {
         const bytes = new Uint8Array(buffer);
         const len = bytes.length;
         let binaryString = '';
-      
+
         const chunkSize = 1024;
         for (let i = 0; i < len; i += chunkSize) {
             const end = Math.min(i + chunkSize, len);
             const chunk = String.fromCharCode.apply(null, bytes.subarray(i, end));
             binaryString += chunk;
         }
-      
+
         return window.btoa(binaryString);
     };
     useEffect(() => {
@@ -56,8 +57,8 @@ const Profile = () => {
         getCurrentUser();
     }, [navigate]);
 
-    
-    
+
+
     const handleBack = () => {
         navigate("/")
     };
@@ -71,7 +72,11 @@ const Profile = () => {
     if (error) {
         return <div>{error}</div>;
     }
-
+    if (user === null) {
+        return (
+            <Loading/>
+        );
+    }
     return (
         <div className="user-list-container">
             <div className='user-list users-list'>
@@ -86,9 +91,6 @@ const Profile = () => {
                 </div>
                 <ul className="profile-page">
                     <li key={user?._id}>
-                        <p className="status Online">
-                            <MdCircle />
-                        </p>
                         <img
 
                             src={profilePic || 'default-avatar.png'}

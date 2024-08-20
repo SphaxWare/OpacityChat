@@ -7,6 +7,7 @@ import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { CgLogOff } from "react-icons/cg";                                              
 import { MdCircle } from "react-icons/md";
+import Loading from './loading';
 
 
 
@@ -196,7 +197,7 @@ const UserList = () => {
     }
 
     if (currentUser === null) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
     
     const sendToProfile = () => {
