@@ -52,7 +52,8 @@ const Profile = () => {
             <div className='user-list users-list'>
                 <div className="user-profile">
                     <FaArrowLeft className="profile-back-icon" onClick={handleBack} />
-                    <div className="user-info">
+                    <div className="profile">
+                        Profile
                     </div>
                     <button className="profile-logout-button" onClick={handleLogout}>
                         <CgLogOff />
@@ -68,8 +69,9 @@ const Profile = () => {
                             alt="Profile"
                         />
                         <div className="profile-username">{user?.username}</div>
+                    </li>
+                    <li>
                         <div className="profile-bio">user's bio where he yaps about anything and everything. From the intricacies of quantum physics to the perfect recipe for grilled cheese, this person's mind is a never-ending kaleidoscope of thoughts and ideas. One moment they're pondering the existence of extraterrestrial life, the next they're debating the merits of different streaming services. With a vocabulary that could rival a dictionary and an enthusiasm that's borderline infectious, this individual is a walking, talking encyclopedia of random knowledge. Whether you're looking for intellectual stimulation or just a good laugh, this bio is your one-stop shop for all things absurd and fascinating. So buckle up and prepare to have your mind blown (or at least mildly entertained).user's bio where he yaps about anything and everything. From the intricacies of quantum physics to the perfect recipe for grilled cheese, this person's mind is a never-ending kaleidoscope of thoughts and ideas. One moment they're pondering the existence of extraterrestrial life, the next they're debating the merits of different streaming services. With a vocabulary that could rival a dictionary and an enthusiasm that's borderline infectious, this individual is a walking, talking encyclopedia of random knowledge. Whether you're looking for intellectual stimulation or just a good laugh, this bio is your one-stop shop for all things absurd and fascinating. So buckle up and prepare to have your mind blown (or at least mildly entertained).</div>
-
                     </li>
                 </ul>
             </div>
