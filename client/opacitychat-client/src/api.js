@@ -50,6 +50,7 @@ export const profileUser = async () => {
         'Authorization': `Bearer ${token}`
       }
     });
+    console.log("from profileUser", response.data)
     return response.data;
   } catch (error) {
     console.error('Error accessing profile:', error);
@@ -66,6 +67,7 @@ export const fetchUsers = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("from fetchUsers", response.data)
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);

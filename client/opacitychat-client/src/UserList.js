@@ -5,14 +5,14 @@ import './UserList.css';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaAngleUp } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import { CgLogOff } from "react-icons/cg";                                              
+import { CgLogOff } from "react-icons/cg";
 import { MdCircle } from "react-icons/md";
 import Loading from './loading';
 
 
 
 // Connect to the backend WebSocket server
-console.log(process.env.REACT_APP_BACKEND_PROD)             
+console.log(process.env.REACT_APP_BACKEND_PROD)
 console.log(process.env.REACT_APP_API_PROD_URL)
 
 const socket = io(process.env.REACT_APP_BACKEND_PROD)
@@ -27,46 +27,6 @@ const UserList = () => {
     const navigate = useNavigate();
     const chatBoxRef = useRef(null);
 
-    // when user close tab he get deconnected
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            socket.emit('userOffline', currentUser._id);
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, [currentUser])
-    // when user leave app without closing tab
-    useEffect(() => {
-        const handleVisibilityChange = () => {
-            let offlineTimer;
-            if (document.hidden) {
-                // make user offline if he's still not on the windows after 2 min
-                offlineTimer = setTimeout(() => {
-                    socket.emit('userOffline', currentUser._id);
-                    console.log('User is offline due to inactivity for 5 minutes.', navigate.userAgent);
-                },2 * 60 * 1000);
-            } else {
-                clearTimeout(offlineTimer);
-                socket.emit('userOnline', currentUser._id);
-            }
-        };
-
-        const handleBeforeUnload = () => {
-            socket.emit('userOffline', currentUser._id);
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, [currentUser, navigate.userAgent]);
-
     // scroll down when new message arrive
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -78,8 +38,17 @@ const UserList = () => {
         const getUsers = async () => {
             try {
                 const usersData = await fetchUsers();
-                setUsers(usersData);
-                console.log(usersData);
+                if (usersData) {
+                    const updatedUsers = usersData.map(user => {
+                        if (user.profilePic && user.profilePic.data) {
+                            const base64String = arrayBufferToBase64(user.profilePic.data.data);
+                            user.profilePic = `data:${user.profilePic.contentType};base64,${base64String}`;
+                        }
+                        return user;
+                    });
+                    setUsers(updatedUsers);
+                    console.log(updatedUsers);
+                }
             } catch (error) {
                 setError('Error fetching users');
                 console.error('Error fetching users:', error);
@@ -94,14 +63,14 @@ const UserList = () => {
         const bytes = new Uint8Array(buffer);
         const len = bytes.length;
         let binaryString = '';
-      
+
         const chunkSize = 1024;
         for (let i = 0; i < len; i += chunkSize) {
             const end = Math.min(i + chunkSize, len);
             const chunk = String.fromCharCode.apply(null, bytes.subarray(i, end));
             binaryString += chunk;
         }
-      
+
         return window.btoa(binaryString);
     };
 
@@ -109,8 +78,10 @@ const UserList = () => {
         const getCurrentUser = async () => {
             try {
                 const user = await profileUser();
+                socket.emit('userOnline', user._id);
                 console.log(user)
                 if (user) {
+
                     if (user.profilePic && user.profilePic.data) {
                         const base64String = arrayBufferToBase64(user.profilePic.data.data);
                         user.profilePic = `data:${user.profilePic.contentType};base64,${base64String}`;
@@ -197,9 +168,9 @@ const UserList = () => {
     }
 
     if (currentUser === null) {
-        return <Loading/>;
+        return <Loading />;
     }
-    
+
     const sendToProfile = () => {
         navigate('/profile')
     }
@@ -291,7 +262,7 @@ const UserList = () => {
             </div>
             <div className="chat-interface">
                 <div className="chat-header">
-                <FaArrowLeft className="back-icon" onClick={handleBack} />
+                    <FaArrowLeft className="back-icon" onClick={handleBack} />
                     <div className="user-info">
                         <img className="profile-pic" src={selectedUser?.profilePic || 'default-avatar.png'} alt="Profile" />
                         <div className="user-details">

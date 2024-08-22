@@ -24,9 +24,9 @@ exports.registerUser = async (req, res) => {
       });
     } else {
       console.log("req.file is undefined");
-      user = new User({ username, email, password});
+      user = new User({ username, email, password });
     }
-    
+
     await user.save();
 
     const payload = { id: user.id };
@@ -78,7 +78,7 @@ exports.getAllUsers = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const loggedInUserId = decoded.id;
 
-    const users = await User.find({ _id: { $ne: loggedInUserId } }).select('username email isOnline');
+    const users = await User.find({ _id: { $ne: loggedInUserId } }).select('-password');
 
     res.json(users);
   } catch (err) {
