@@ -90,3 +90,34 @@ export const fetchMessages = async (user1, user2) => {
     throw error;
   }
 }
+// update profile info
+export const updateProfile = async (userData) => {
+  try {
+    const token = getToken();
+
+    // Prepare form data for the profile update
+    const formData = new FormData();
+    formData.append('username', userData.username);
+    formData.append('bio', userData.bio);
+    if (userData.profilePic) {
+      formData.append('profilePic', userData.profilePic);
+    }
+    console.log("updateProfile: ", userData)
+    console.log("update: ", "here")
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    // Send the update request to the backend
+    const response = await axios.put(`${API_BASE_URL}/users/profile`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { profileUser } from './api';
+import { profileUser, updateProfile } from './api';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { CgLogOff } from "react-icons/cg";
@@ -14,6 +14,19 @@ const Profile = () => {
     const [user, setUser] = useState(null);
     const [profilePic, setProfilePic] = useState('default-avatar.png');
     const [error, setError] = useState(null);
+    // for editing profile
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedUsername, setEditedUsername] = useState('');
+    const [editedBio, setEditedBio] = useState('');
+    const [newProfilePic, setNewProfilePic] = useState(null);
+
+    const toggleEditMode = () => {
+        setIsEditing(!isEditing);
+        if (!isEditing) {
+            setEditedUsername(user?.username || '');
+            setEditedBio(user?.bio || '');
+        }
+    };
 
     const arrayBufferToBase64 = (buffer) => {
         const bytes = new Uint8Array(buffer);
@@ -69,42 +82,115 @@ const Profile = () => {
         navigate("/login");
     };
 
+    const handleProfilePicChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setNewProfilePic(file);
+        }
+    };
+
+    const handleSave = async () => {
+        try {
+            console.log("editedUsername:", editedUsername);
+            console.log("editedBio:", editedBio);
+            console.log("newProfilePic:", newProfilePic);
+        
+            const userData = {
+              username: editedUsername,
+              bio: editedBio,
+              profilePic: newProfilePic
+            };
+        
+            await updateProfile(userData);
+        
+            // Update local state
+            setUser(prevUser => ({
+              ...prevUser,
+              username: editedUsername,
+              bio: editedBio,
+            }));
+            setProfilePic(newProfilePic ? URL.createObjectURL(newProfilePic) : profilePic);
+            setIsEditing(false);
+        } catch (error) {
+            setError('Error saving profile');
+            console.error('Error saving profile:', error);
+        }
+    };
+    
+
     if (error) {
         return <div>{error}</div>;
     }
     if (user === null) {
         return (
-            <Loading/>
+            <Loading />
         );
     }
     return (
-        <div className="user-list-container">
-            <div className='user-list users-list'>
-                <div className="user-profile">
-                    <FaArrowLeft className="profile-back-icon" onClick={handleBack} />
-                    <div className="profile">
-                        Profile
-                    </div>
-                    <button className="profile-logout-button" onClick={handleLogout}>
-                        <CgLogOff />
-                    </button>
+    <div className="user-list-container">
+        <div className='user-list users-list'>
+            <div className="user-profile">
+                <FaArrowLeft className="profile-back-icon" onClick={handleBack} />
+                <div className="profile">
+                    Profile
                 </div>
-                <ul className="profile-page">
-                    <li key={user?._id}>
-                        <img
-
-                            src={profilePic || 'default-avatar.png'}
-                            alt="Profile"
+                <button className="profile-logout-button" onClick={handleLogout}>
+                    <CgLogOff />
+                </button>
+            </div>
+            <ul className="profile-page">
+                <li key={user?._id}>
+                    <img
+                        src={profilePic || 'default-avatar.png'}
+                        alt="Profile"
+                    />
+                    {isEditing ? (
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleProfilePicChange}
                         />
-                        <div className="profile-username">{user?.username}</div>
-                    </li>
-                    <li>
-                        <div className="profile-bio">user's bio where he yaps about anything and everything. From the intricacies of quantum physics to the perfect recipe for grilled cheese, this person's mind is a never-ending kaleidoscope of thoughts and ideas. One moment they're pondering the existence of extraterrestrial life, the next they're debating the merits of different streaming services. With a vocabulary that could rival a dictionary and an enthusiasm that's borderline infectious, this individual is a walking, talking encyclopedia of random knowledge. Whether you're looking for intellectual stimulation or just a good laugh, this bio is your one-stop shop for all things absurd and fascinating. So buckle up and prepare to have your mind blown (or at least mildly entertained).user's bio where he yaps about anything and everything. From the intricacies of quantum physics to the perfect recipe for grilled cheese, this person's mind is a never-ending kaleidoscope of thoughts and ideas. One moment they're pondering the existence of extraterrestrial life, the next they're debating the merits of different streaming services. With a vocabulary that could rival a dictionary and an enthusiasm that's borderline infectious, this individual is a walking, talking encyclopedia of random knowledge. Whether you're looking for intellectual stimulation or just a good laugh, this bio is your one-stop shop for all things absurd and fascinating. So buckle up and prepare to have your mind blown (or at least mildly entertained).</div>
-                    </li>
-                </ul>
+                    ) : null}
+                    <div className="profile-username">
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                value={editedUsername}
+                                onChange={(e) => setEditedUsername(e.target.value)}
+                            />
+                        ) : (
+                            user?.username
+                        )}
+                    </div>
+                </li>
+                <li>
+                    <div className="profile-bio">
+                        <div className='Bio-title'>Bio:</div>
+                        {isEditing ? (
+                            <textarea
+                                value={editedBio}
+                                onChange={(e) => setEditedBio(e.target.value)}
+                            />
+                        ) : (
+                            user?.bio || 'Bio not available'
+                        )}
+                    </div>
+                </li>
+            </ul>
+            <div className="profile-edit-buttons">
+                {isEditing ? (
+                    <button onClick={handleSave}>Save</button>
+                ) : (
+                    <button onClick={toggleEditMode}>Edit Profile</button>
+                )}
+                {isEditing ? (
+                    <button onClick={toggleEditMode}>Cancel</button>
+                ) : null}
             </div>
         </div>
-    );
+    </div>
+);
+
 };
 
 export default Profile;

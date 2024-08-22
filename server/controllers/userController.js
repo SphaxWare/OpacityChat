@@ -85,3 +85,44 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+// update user profile
+exports.updateProfile = async (req, res) => {
+  const { username, bio } = req.body;
+  
+  console.log("Request body:", req.body);
+  console.log("Uploaded file:", req.file);
+  try {
+    // Extract the user ID from the token
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    // Find the user by ID
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Update the user's information
+    if (username) user.username = username;
+    if (bio) user.bio = bio;
+
+    // Check if a new profile picture was uploaded
+    if (req.file) {
+      console.log("Updating profile picture...");
+      user.profilePic = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+    //console.log("Edited: ",user)
+    // Save the updated user information
+    await user.save();
+
+    res.json({ msg: 'Profile updated successfully', user });
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

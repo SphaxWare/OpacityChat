@@ -69,20 +69,23 @@
 }
 .profile-page img{
     margin: 0px;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     border: solid rgb(193, 193, 193);
     transition: 500ms ease;
 }
 
 .profile-page img:hover {
-    width: 300px;
-    height: 300px;
-    border-radius: 25%;
-    transition: 500ms ease;
+    width: 250px;
+    height: 250px;
+    border-radius: 5%;
+    transition: 200ms ease;
 }
 
+.change-pic {
+    position: relative;
+}
 .profile-page img:hover + p {
     display: none;
 }
@@ -95,17 +98,35 @@
 .profile-username{
     margin-top: -10px;
     font-weight: bold;
-    font-size: 55px;
+    font-size: 35px;
     transition: 500ms ease;
 }
 
 .profile-bio{
+    color: #4d4c4c;
+    width: 320px;
+    margin-left: 50px;
     margin-top: 20px;
     font-size: 25px;
-    font-weight: 400;
+    font-weight: 100;
 }
 
 .profile{
+    font-size: 40px;
+    font-weight: bold;
+    transition: 500ms ease;
+}
+
+.profile:hover{
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    color: #dddddd00;
+    font-size: 45px;
+    font-weight: bold;
+    transition: 500ms ease;
+}
+.Bio-title{
     font-size: 30px;
+    color: #000000;
     font-weight: bold;
 }
