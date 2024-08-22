@@ -6,6 +6,7 @@ import { CgLogOff } from "react-icons/cg";
 import io from 'socket.io-client';
 import './Profile.css';
 import Loading from './loading.js';
+import { TbCameraPlus } from "react-icons/tb";
 
 
 const socket = io(process.env.REACT_APP_BACKEND_PROD)
@@ -85,6 +86,9 @@ const Profile = () => {
     const handleProfilePicChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            console.log(imageUrl)
+            setProfilePic(imageUrl);
             setNewProfilePic(file);
         }
     };
@@ -94,20 +98,20 @@ const Profile = () => {
             console.log("editedUsername:", editedUsername);
             console.log("editedBio:", editedBio);
             console.log("newProfilePic:", newProfilePic);
-        
+
             const userData = {
-              username: editedUsername,
-              bio: editedBio,
-              profilePic: newProfilePic
+                username: editedUsername,
+                bio: editedBio,
+                profilePic: newProfilePic
             };
-        
+
             await updateProfile(userData);
-        
+
             // Update local state
             setUser(prevUser => ({
-              ...prevUser,
-              username: editedUsername,
-              bio: editedBio,
+                ...prevUser,
+                username: editedUsername,
+                bio: editedBio,
             }));
             setProfilePic(newProfilePic ? URL.createObjectURL(newProfilePic) : profilePic);
             setIsEditing(false);
@@ -116,7 +120,7 @@ const Profile = () => {
             console.error('Error saving profile:', error);
         }
     };
-    
+
 
     if (error) {
         return <div>{error}</div>;
@@ -127,69 +131,83 @@ const Profile = () => {
         );
     }
     return (
-    <div className="user-list-container">
-        <div className='user-list users-list'>
-            <div className="user-profile">
-                <FaArrowLeft className="profile-back-icon" onClick={handleBack} />
-                <div className="profile">
-                    Profile
+        <div className="user-list-container">
+            <div className='user-list users-list'>
+                <div className="user-profile">
+                    <FaArrowLeft className="profile-back-icon" onClick={handleBack} />
+                    <div className="profile">
+                        Profile
+                    </div>
+                    <button className="profile-logout-button" onClick={handleLogout}>
+                        <CgLogOff />
+                    </button>
                 </div>
-                <button className="profile-logout-button" onClick={handleLogout}>
-                    <CgLogOff />
-                </button>
-            </div>
-            <ul className="profile-page">
-                <li key={user?._id}>
-                    <img
-                        src={profilePic || 'default-avatar.png'}
-                        alt="Profile"
-                    />
-                    {isEditing ? (
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleProfilePicChange}
-                        />
-                    ) : null}
-                    <div className="profile-username">
-                        {isEditing ? (
-                            <input
-                                type="text"
-                                value={editedUsername}
-                                onChange={(e) => setEditedUsername(e.target.value)}
+                <ul className="profile-page">
+                    <li key={user?._id}>
+                        <div className="profile-pic-container">
+                            <img
+                                src={profilePic || 'default-avatar.png'}
+                                alt="Profile"
                             />
-                        ) : (
-                            user?.username
-                        )}
-                    </div>
-                </li>
-                <li>
-                    <div className="profile-bio">
-                        <div className='Bio-title'>Bio:</div>
+                            {isEditing ? (
+                                <>
+                                    <span className='change-pic-icon'
+                                        onClick={() => document.querySelector('.change-pic').click()}
+                                    >
+                                        <TbCameraPlus />
+                                    </span>
+                                    <input
+                                        className='change-pic'
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleProfilePicChange}
+                                    />
+                                </>
+                            ) : null}
+                        </div>
+                    </li>
+                    <li>
+                        <div className="profile-username">
+                            {isEditing ? (
+                                <input
+                                    className='username-input'
+                                    type="text"
+                                    value={editedUsername}
+                                    onChange={(e) => setEditedUsername(e.target.value)}
+                                />
+                            ) : (
+                                user?.username
+                            )}
+                        </div>
+                        <div className="profile-bio">
+                            {isEditing ? (
+                                <textarea
+                                    className='bio-input'
+                                    value={editedBio}
+                                    onChange={(e) => setEditedBio(e.target.value)}
+                                />
+                            ) : (
+                                user?.bio || 'Bio not available'
+                            )}
+                        </div>
+                    </li>
+                    <div className="profile-edit-buttons">
                         {isEditing ? (
-                            <textarea
-                                value={editedBio}
-                                onChange={(e) => setEditedBio(e.target.value)}
-                            />
+                            <button className='editing-profile' onClick={handleSave}>Save</button>
                         ) : (
-                            user?.bio || 'Bio not available'
+                            <button className='edit-profile' onClick={toggleEditMode}>Edit Profile</button>
                         )}
+                        {isEditing ? (
+                            <button className='editing-profile' onClick={toggleEditMode}>Cancel</button>
+                        ) : null}
                     </div>
-                </li>
-            </ul>
-            <div className="profile-edit-buttons">
-                {isEditing ? (
-                    <button onClick={handleSave}>Save</button>
-                ) : (
-                    <button onClick={toggleEditMode}>Edit Profile</button>
-                )}
-                {isEditing ? (
-                    <button onClick={toggleEditMode}>Cancel</button>
-                ) : null}
+                    <li>
+
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
-);
+    );
 
 };
 

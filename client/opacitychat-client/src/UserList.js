@@ -46,8 +46,13 @@ const UserList = () => {
                         }
                         return user;
                     });
-                    setUsers(updatedUsers);
-                    console.log(updatedUsers);
+                    // Sort users by isOnline status (online users first)
+                    const sortedUsers = updatedUsers.sort((a, b) => {
+                        return b.isOnline - a.isOnline;
+                    });
+
+                    setUsers(sortedUsers);
+                    console.log(sortedUsers);
                 }
             } catch (error) {
                 setError('Error fetching users');
@@ -101,13 +106,18 @@ const UserList = () => {
     }, [navigate]);
 
     useEffect(() => {
+        // Function to sort users by online status
+        const sortUsersByOnlineStatus = (usersList) => {
+            return [...usersList].sort((a, b) => b.isOnline - a.isOnline);
+        };
         // Listen for 'updateUserStatus' event to update user status in the client
         socket.on('updateUserStatus', ({ userId, isOnline }) => {
-            setUsers((prevUsers) =>
-                prevUsers.map((user) =>
+            setUsers((prevUsers) => {
+                const updatedUsers = prevUsers.map((user) =>
                     user._id === userId ? { ...user, isOnline } : user
-                )
-            );
+                );
+                return sortUsersByOnlineStatus(updatedUsers);
+            });
 
             if (selectedUser && selectedUser._id === userId) {
                 setSelectedUser((prevUser) => ({ ...prevUser, isOnline }));
