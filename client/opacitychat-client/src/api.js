@@ -121,3 +121,16 @@ export const updateProfile = async (userData) => {
     throw error;
   }
 };
+
+// get user's profile
+// Fetch the profile of another user by their user ID
+export const getUserProfile = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/profile/${userId}`);
+    console.log("130 api.js", response.data)
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
+  }
+};

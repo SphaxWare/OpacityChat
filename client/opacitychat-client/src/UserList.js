@@ -33,7 +33,7 @@ const UserList = () => {
             chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
         }
     }, [messages]); // This effect runs every time `messages` changes
-
+    
     useEffect(() => {
         const getUsers = async () => {
             try {
@@ -177,7 +177,7 @@ const UserList = () => {
         return <div>{error}</div>;
     }
 
-    if (currentUser === null) {
+    if (currentUser === null || users == null) {
         return <Loading />;
     }
 
@@ -199,6 +199,11 @@ const UserList = () => {
         socket.emit('userOffline', currentUser._id);
         navigate("/login");
     };
+
+    const handleGetProfile = () => {
+        console.log(`/user-profile/${selectedUser._id}`)
+        navigate(`/user-profile/${selectedUser._id}`)
+    }
 
     const handleSend = () => {
         if (newMessage.trim() && selectedUser) {
@@ -246,7 +251,6 @@ const UserList = () => {
                     <div className="current-user-info">
                         <div className="current-username" onClick={sendToProfile}>{currentUser.username}</div>
                         <button className="logout-button" onClick={handleLogout}><CgLogOff />
-
                         </button>
                     </div>
                 </div>
@@ -261,7 +265,7 @@ const UserList = () => {
                             />
                             <div className="users-info">
                                 <div className="username">{user.username}</div>
-                                <div className="bio">users's bio users's</div> {/* Placeholder for last message */}
+                                <div className="bio">{user.bio || `${user.username} doesnt have a bio`}</div> {/* Placeholder for last message */}
                             </div>
                             <div className={`status ${user.isOnline ? 'Online' : 'Offline'}`}>
                                 {user.isOnline ? <MdCircle /> : <MdCircle />}
@@ -273,7 +277,7 @@ const UserList = () => {
             <div className="chat-interface">
                 <div className="chat-header">
                     <FaArrowLeft className="back-icon" onClick={handleBack} />
-                    <div className="user-info">
+                    <div className="user-info" onClick={handleGetProfile}>
                         <img className="profile-pic" src={selectedUser?.profilePic || 'default-avatar.png'} alt="Profile" />
                         <div className="user-details">
                             <div className="username">{selectedUser?.username}</div>
@@ -314,9 +318,9 @@ const UserList = () => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) { // Handle Enter key press
-                                e.preventDefault(); // Prevent default Enter key behavior
-                                handleSend(); // Call the send function
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handleSend();
                             }
                         }}
                     />

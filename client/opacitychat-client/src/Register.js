@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { registerUser } from './api';
+import { TbCameraPlus } from "react-icons/tb";
 
 const Register = ({ toggleForm }) => {
   const [username, setUsername] = useState('');
@@ -60,11 +61,17 @@ const Register = ({ toggleForm }) => {
         />
         <br />
         <input
+          className='register-pic'
           name="profilePic"
           type="file"
           accept="image/*"
           onChange={handleFileChange}
         />
+        <span className='register-pic-icon'
+          onClick={() => document.querySelector('.register-pic').click()}
+        >
+          <TbCameraPlus />
+        </span>
         <br />
         <button type="submit">Register</button>
       </form>

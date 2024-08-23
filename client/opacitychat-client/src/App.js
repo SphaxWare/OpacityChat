@@ -7,6 +7,7 @@ import Loading from './loading';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { profileUser } from './api';
+import UserProfile from './UserProfile';
 
 const socket = io(process.env.REACT_APP_BACKEND_PROD);
 
@@ -37,7 +38,6 @@ function App() {
         socket.emit('userOnline', user._id);
         console.log(user)
         if (user) {
-
           if (user.profilePic && user.profilePic.data) {
             const base64String = arrayBufferToBase64(user.profilePic.data.data);
             user.profilePic = `data:${user.profilePic.contentType};base64,${base64String}`;
@@ -94,21 +94,17 @@ function App() {
     };
   }, [currentUser]);
 
-
   return (
     <Router>
       <div className="App">
-        {isLoggedin ? (
-          <Navigate to="/login" />
-        ) : (
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<FormCard />} />
             <Route path="/users" element={<UserList />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/loading" element={<Loading />} />
+            <Route path="/user-profile/:userId" element={<UserProfile />} />
           </Routes>
-        )}
       </div>
     </Router>
   );
